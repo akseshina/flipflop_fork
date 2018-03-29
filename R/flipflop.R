@@ -88,8 +88,8 @@ flipflop <- function(data.file,
                      sliceCount=1,
                      mc.cores=1, # 2015-03-16
                      NN='',
-                     verbose=0,
-                     verbosepath=0,
+                     verbose=1,
+                     verbosepath=1,
                      cutoff=1, # 2015-01-22
                      BICcst=50,
                      delta=1e-7, # 2015-01-22
@@ -107,7 +107,7 @@ flipflop <- function(data.file,
       print('HIIIIIIIIIIIIIIIIIIIIIII !!!!!!!!!!!!!!!!!!!')
       data.file <- path.expand(path=data.file) # In case there is a '~' in the input path
       
-      if (data.file=='') { print('Did you forget to give a SAM file?') ; return(NULL) } 
+      if (data.file == '') { print('Did you forget to give a SAM file?') ; return(NULL) } 
       
       annot.file <- path.expand(path=annot.file)
       samples.file <- path.expand(path=samples.file)
@@ -120,15 +120,15 @@ flipflop <- function(data.file,
    }
 
    ## Continue the job:
-   if (!OnlyPreprocess) {
+   if (OnlyPreprocess == FALSE) {
       
       # Total number of mapped reads, if not provided
-      if (NN=='') { # if NN (total number of mapped fragments) is not given, read it in the file created previously
-         if (preprocess.instance=='') {
+      if (NN == '') { # if NN (total number of mapped fragments) is not given, read it in the file created previously
+         if (preprocess.instance == '') {
             numrfn <- paste(prefix, '.totalnumread', sep="")
             numrf <- file(numrfn,'r') # Read the file where the total number of reads is stored
          }
-         if (preprocess.instance!='') {
+         if (preprocess.instance != '') {
             go1 <- dirname(preprocess.instance)
             go2 <- sub('[.][^.]*$', '',basename(preprocess.instance))
             goname <- paste(go2,'.totalnumread',sep="")
@@ -142,10 +142,11 @@ flipflop <- function(data.file,
             numrf <- file(numrfn,'r')
          }
          nn <- scan(numrf, what=character(0), nlines=1, quiet=TRUE, skip=1) # Total number of mapped reads
-         if (paired==FALSE) {
+         
+         if (paired == FALSE) 
             NN <- as.integer(nn[1])
-         }
-         if (paired==TRUE) {
+         
+         if (paired == TRUE) {
             npair <- scan(numrf, what=character(0), nlines=1, quiet=TRUE, skip=1)
             Npair <- as.integer(npair[1])
             NN <- Npair # Total number of mapped fragments
@@ -156,7 +157,7 @@ flipflop <- function(data.file,
       # Samples file
       samples.name <- NULL
       n.samples <- 1
-      if (samples.file!='') {
+      if (samples.file != '') {
          samples <- read.table(samples.file)
          samples.name <- sort(unique(samples[,1]))
          n.samples <- length(samples.name)
@@ -174,8 +175,8 @@ flipflop <- function(data.file,
          go2 <- sub('[.][^.]*$', '', basename(out.file))
          go <- paste(go1,go2,sep='/')
          tmp.names.all <- sapply(strsplit(nn[-1], split='='), FUN=function(k) k[1]) # all sample names in the instance file
-         ind.samples <- sapply(samples.name, FUN=function(ii) which(tmp.names.all==ii)) # keep the ones given in the sample file
-         if (output.type=='table') {
+         ind.samples <- sapply(samples.name, FUN=function(ii) which(tmp.names.all == ii)) # keep the ones given in the sample file
+         if (output.type == 'table') {
             outf <- list(file(out.file, 'w'))
             outf.fpkm <- file(paste(go, 'fpkm', sep='_'), 'w')
             outf.count <- file(paste(go, 'count', sep='_'), 'w')
@@ -194,8 +195,8 @@ flipflop <- function(data.file,
       }
 
       # Use given preprocess.instance input file:
-     doparal <- FALSE 
-      if (preprocess.instance!='') {
+      doparal <- FALSE 
+      if (preprocess.instance != '') {
          inpf <- file(preprocess.instance, 'r')
       } else {
          infn <- paste(prefix, '.instance', sep='')
@@ -302,8 +303,9 @@ flipflop <- function(data.file,
       beta.expcount <- res.flipflop$expected.countd
       timer.all <- res.flipflop$timer
    }
+  
    ## Delete processed sam file
-   if (preprocess.instance=='' & !OnlyPreprocess) {
+   if (preprocess.instance == '' & OnlyPreprocess == FALSE) {
       unlink(numrfn)
       unlink(infn)
       if (doparal) { 
@@ -311,7 +313,7 @@ flipflop <- function(data.file,
          lapply(1:sliceCount.eff, FUN=function(ss) unlink(paste(prefix,'_',ss,'.instance', sep="")))
       }
    }
-   if (OnlyPreprocess==FALSE) {
+   if (OnlyPreprocess == FALSE) {
       return(list(transcripts=granges, abundancesFPKM=beta.fpkm, expected.counts=beta.expcount, timer=timer.all))
    }
 }

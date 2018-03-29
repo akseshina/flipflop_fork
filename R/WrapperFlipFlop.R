@@ -46,7 +46,7 @@ WrapperFlipFlop <- function(
       mm <- 0
       scan(inpf, what=character(0), nlines=3, quiet=TRUE)
 
-      while(1){
+      while(1) {
          mm <- mm+1
 
          ## Name-Instance
@@ -54,7 +54,7 @@ WrapperFlipFlop <- function(
          print(name)
          nom <- paste('Inst', name[2], sep='')
 
-         if(length(name)==0) break
+         if (length(name)==0) break
 
          ## Boundary
          bound <- scan(inpf, what=character(0), nlines=1, quiet=TRUE)
@@ -86,7 +86,7 @@ WrapperFlipFlop <- function(
          ref <- scan(inpf, what=character(0), nlines=1, quiet=TRUE)
          nref <- as.integer(ref[2])
          TSSref <- PASref <- NULL
-         if(nref>=1){
+         if (nref>=1) {
             # so far we don't use reference information for more than exon boundaries and (optionnaly) TSS and PAS
             listref <- scan(inpf, what=character(0), nlines=nref, quiet=TRUE) 
             dim(listref) <- c((n.exons+2),nref)
@@ -102,13 +102,13 @@ WrapperFlipFlop <- function(
          ## Read type
          type <- scan(inpf, what=character(0), nlines=1, quiet=TRUE)
          ntype <- as.integer(type[2])
-         if(ntype > 0){
+         if (ntype > 0) {
             readtype_all <- scan(inpf, what=character(0), nlines=ntype, quiet=TRUE)
             dim(readtype_all) <- c(length(readtype_all)/ntype, ntype)
             readtype_all <- t(readtype_all)
             readtype <- readtype_all[,1:(n.exons+1), drop=F]
             readtype <- apply(readtype, 2, as.double)  # readtype contains all types of reads for the sum of samples (as.double otherwise bug)
-            if(!is.matrix(readtype)) readtype <- matrix(readtype, ncol=length(readtype))
+            if (!is.matrix(readtype)) readtype <- matrix(readtype, ncol=length(readtype))
             n.samples.max <- ncol(readtype_all)-ncol(readtype)-1 # the total number of samples in the provied instance file (potentially more than the given samples)
          } else {
             VALID <- FALSE
@@ -120,16 +120,16 @@ WrapperFlipFlop <- function(
          npetype <- as.integer(petype[3])
          # Skip instance when not enough mapped reads or mapped fragments 
          # (but don't skip if your reads are supposed to be paired but there is more than 1000 single-end reads)
-         if(nreads<minReadNum | (paired==TRUE & npereads<minFragNum & nreads<1000)){
-            if(npetype>0){
+         if (nreads<minReadNum | (paired==TRUE & npereads<minFragNum & nreads<1000)) {
+            if (npetype>0) {
                scan(inpf, what=character(0), nlines=((2+n.samples.max)*npetype), quiet=TRUE) # Skip paired-end type information
             }
             next
          }
          # Consider reads as single-end (npetype==0 means there is no pair and for npetype>300 the paired graph creation is too long):
          eff.paired <- FALSE
-         if(npetype>0){
-            if(paired==FALSE | npetype>=300) {
+         if (npetype>0) {
+            if (paired==FALSE | npetype>=300) {
                scan(inpf, what=character(0), nlines=((2+n.samples.max)*npetype), quiet=TRUE) # Skip paired-end type information
             } else {
                # Paired-end reads:
@@ -150,22 +150,22 @@ WrapperFlipFlop <- function(
          ## Create Splicing Graph
          ## NODE:=READTYPE:=BIN
          ##==========================================
-         if(!eff.paired & nreads>0){
+         if (!eff.paired & nreads>0) {
             lolo <- lapply(1:nrow(readtype), FUN=function(v) which(readtype[v,1:n.exons]==1))
             ## sanity check 2 --- valid bins ----------------------------------
-            validbins <- sapply(lolo, FUN=function(v){
-                                if(length(v)<=2){ return((sum(len.exons[v])>=readlen)) }
-                                if(length(v)>=3){ vv <- v[2:(length(v)-1)] ; return(((sum(len.exons[v])>=readlen) & (sum(len.exons[vv])<(readlen-1)))) }
+            validbins <- sapply(lolo, FUN=function(v) {
+                                if (length(v)<=2) { return((sum(len.exons[v])>=readlen)) }
+                                if (length(v)>=3) { vv <- v[2:(length(v)-1)] ; return(((sum(len.exons[v])>=readlen) & (sum(len.exons[vv])<(readlen-1)))) }
                                        })
             VALID <- (sum(validbins)>0)
          }
 
-         if(!VALID) { # don't go if you do not have reads or any bins
+         if (!VALID) { # don't go if you do not have reads or any bins
             path.select <- matrix(0, nrow=n.exons, ncol=1)
             beta.select <- beta.raw <- rep(0, n.samples)
          } else {
             # Create bins and graph
-            if(!eff.paired) {
+            if (!eff.paired) {
                keeplolo <- lolo[validbins]
                count.first <- readtype[validbins,n.exons+1]
                graph_creation <- graph_single(binlist=keeplolo, count.first=count.first, readlen=readlen,
@@ -183,19 +183,19 @@ WrapperFlipFlop <- function(
             graph <- graph_creation$graph
             
             # save matrix of count for each samples ---------------------
-            if(!is.null(samples.name)){
+            if (!is.null(samples.name)) {
                indcount <- graph_creation$indcount
                count.samples <- matrix(0, nrow=n.nodes, ncol=n.samples)
-               if(!eff.paired) {
+               if (!eff.paired) {
                   goodtype_all <- readtype_all[validbins,(n.exons+2):(n.exons+1+n.samples.max),drop=F]
-                  count.first.samples <- apply(goodtype_all, 1, FUN=function(v){
+                  count.first.samples <- apply(goodtype_all, 1, FUN=function(v) {
                                                pp <- strsplit(v, split='=')
                                                tt <- sapply(pp, FUN=function(k) as.double(k[2]))  # double ?? 
                                                return(tt)})
                   count.samples[indcount,] <- t(count.first.samples)[,ind.samples]
                } else {
                   count.first.samples <- bins.res$count.first.samples
-                  for(nn in 1:n.samples){
+                  for(nn in 1:n.samples) {
                      count.samples[indcount,nn] <- count.first.samples[[nn]]
                   }
                }
@@ -210,8 +210,8 @@ WrapperFlipFlop <- function(
             loss.weights <- sum(NN)*len/1e9
             param$loss_weights <- as.matrix(loss.weights)
 
-            if(n.samples==1 | mergerefit) { # use the 1 dim fit against the one sample or the pool
-               if(!mergerefit & !is.null(samples.name)){
+            if (n.samples==1 | mergerefit) { # use the 1 dim fit against the one sample or the pool
+               if (!mergerefit & !is.null(samples.name)) {
                   count.mono <- count.samples # the count of one given sample
                } else {
                   count.mono <- count # the pool
@@ -225,7 +225,7 @@ WrapperFlipFlop <- function(
                # --> on the individual counts
                n.samples.eff <- n.samples+1
                count.samples.eff <- cbind(count, count.samples) 
-               all.collpath <- mclapply(1:n.samples.eff, FUN=function(jj){
+               all.collpath <- mclapply(1:n.samples.eff, FUN=function(jj) {
                                         collpath <- collect_path_grouplasso(graph, count.samples.eff[,jj,drop=F], param, max_isoforms, delta, 
                                                                             fast_guess=1, iterpoisson=2000, tolpoisson=1e-6, verbosepath, verbose)
                                         pm=matrix(unlist(collpath$path.set), nrow=n.nodes)
@@ -255,7 +255,7 @@ WrapperFlipFlop <- function(
             #lambda.set=respath$lambda.set
             beta.avantrefit=respath$beta.avantrefit
 
-            if(verbose==1) print('MODEL SELECTION ...')
+            if (verbose==1) print('MODEL SELECTION ...')
             ##================
             ## Model Selection:
             ## BIC Criterion
@@ -267,43 +267,43 @@ WrapperFlipFlop <- function(
 
             # beta in FPKM and path
             beta.select <- beta.refit[[select]] # abundance values in FPKM
-            if(n.samples==1 | mergerefit) {
+            if (n.samples==1 | mergerefit) {
                path.tmp <- path.set[[select]]
-               if(mergerefit) {  # AMELIORER LES CONDITIONS ?
+               if (mergerefit) {  # AMELIORER LES CONDITIONS ?
                   beta.select <- refitSamples(count.samples, path.tmp, beta.select, NN, len, delta, 
                                               iterpoisson=2000, tolpoisson=1e-20, verbosepath, mc.cores=mc.cores) # multi-samples refit
                } else {
                   beta.select <- t(beta.select)
                }
             }
-            if(ncol(path.tmp)==0) path.tmp <- matrix(0, n.nodes, 1) # 2015-03-02
+            if (ncol(path.tmp)==0) path.tmp <- matrix(0, n.nodes, 1) # 2015-03-02
             rownames(beta.select) <- samples.name
-            path.select <- apply(path.tmp, 2, FUN=function(pp){
+            path.select <- apply(path.tmp, 2, FUN=function(pp) {
                                  onep <- rep(0, n.exons)
                                  ind.exons <- unique(unlist(strsplit(allbins[which(pp!=0)], split='-')))
                                  ind.exons <- sort(as.numeric(ind.exons))
                                  onep[ind.exons] <- 1
                                  return(onep)})
-            if(!is.matrix(path.select)) path.select <- matrix(path.select, nrow=n.nodes)  # (for when only 1 bins) 
-            if(ncol(path.select)==0) path.select <- matrix(0, nrow=n.nodes) # 2015-03-02
+            if (!is.matrix(path.select)) path.select <- matrix(path.select, nrow=n.nodes)  # (for when only 1 bins) 
+            if (ncol(path.select)==0) path.select <- matrix(0, nrow=n.nodes) # 2015-03-02
             # 2015-03-02
             # no need to check for repeating paths for paired anymore
             # cutoff is now in the writing part
             npaths <- ncol(path.select)
-            ind.exons.all <- lapply(1:npaths, FUN=function(tt){ which(path.select[,tt]!=0)})
-            beta.raw <- sapply(1:npaths, FUN=function(qq){ # beta in RAW COUNTS
+            ind.exons.all <- lapply(1:npaths, FUN=function(tt) { which(path.select[,tt]!=0)})
+            beta.raw <- sapply(1:npaths, FUN=function(qq) { # beta in RAW COUNTS
                                ind.exons <- ind.exons.all[[qq]]
-                               if(eff.paired){
+                               if (eff.paired) {
                                   return(pmax(0,(sum(len.exons[ind.exons]) - frag + 1)*beta.select[,qq]*NN/1e9)) # expected raw counts for paired-end
                                }
-                               if(!eff.paired){
+                               if (!eff.paired) {
                                   return(pmax(0,(sum(len.exons[ind.exons]) - readlen + 1)*beta.select[,qq]*NN/1e9)) # expected raw counts for single-end
                                  }})
-            if(!is.matrix(beta.raw)) beta.raw <- matrix(beta.raw, ncol=npaths)
+            if (!is.matrix(beta.raw)) beta.raw <- matrix(beta.raw, ncol=npaths)
             rownames(beta.raw) <- rownames(beta.select)
 
-            if(length(beta.select)>0){ # UTILE ? 
-               if(verbose==1) print('WRITE in OUTPUT ...')
+            if (length(beta.select)>0) { # UTILE ? 
+               if (verbose==1) print('WRITE in OUTPUT ...')
                ##================
                ## WRITE OUTPUT
                ##================
@@ -319,7 +319,7 @@ WrapperFlipFlop <- function(
          beta.expcount[[mm]] <- beta.raw
          timer.all[mm] <- timer
          strand.gr <- strand
-         if(strand.gr=='.') strand.gr='*'
+         if (strand.gr=='.') strand.gr='*'
          gr <- GRanges(chr,
                        IRanges(tophat.exons[,1], tophat.exons[,2], names=rep(nom, n.exons)),
                        strand=strand.gr,
@@ -330,7 +330,7 @@ WrapperFlipFlop <- function(
 
       close(inpf)
       ccl <- lapply(outf, close)
-      if(!is.null(samples.name) & output.type=='table') {
+      if (!is.null(samples.name) & output.type=='table') {
          close(outf.fpkm)
          close(outf.count)
       }
