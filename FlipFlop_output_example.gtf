@@ -1,0 +1,14 @@
+chr1	Flipflop	transcript	4715106	4843851	.	+	.	gene_id "Inst1"; transcript_id "Inst1.1"; FPKM "278294.311897357"; EXP_COUNT "778.389190376907"; frac "0.709496025487621";	
+chr1	Flipflop	exon	4715106	4715514	.	+	.	gene_id "Inst1"; transcript_id "Inst1.1"; exon_number "1"; FPKM "278294.311897357"; EXP_COUNT "778.389190376907"; frac "0.709496025487621";	
+chr1	Flipflop	exon	4771960	4772759	.	+	.	gene_id "Inst1"; transcript_id "Inst1.1"; exon_number "2"; FPKM "278294.311897357"; EXP_COUNT "778.389190376907"; frac "0.709496025487621";	
+chr1	Flipflop	exon	4829913	4830000	.	+	.	gene_id "Inst1"; transcript_id "Inst1.1"; exon_number "3"; FPKM "278294.311897357"; EXP_COUNT "778.389190376907"; frac "0.709496025487621";	
+chr1	Flipflop	exon	4832340	4832585	.	+	.	gene_id "Inst1"; transcript_id "Inst1.1"; exon_number "4"; FPKM "278294.311897357"; EXP_COUNT "778.389190376907"; frac "0.709496025487621";	
+chr1	Flipflop	exon	4834487	4834618	.	+	.	gene_id "Inst1"; transcript_id "Inst1.1"; exon_number "5"; FPKM "278294.311897357"; EXP_COUNT "778.389190376907"; frac "0.709496025487621";	
+chr1	Flipflop	exon	4842605	4843851	.	+	.	gene_id "Inst1"; transcript_id "Inst1.1"; exon_number "6"; FPKM "278294.311897357"; EXP_COUNT "778.389190376907"; frac "0.709496025487621";	
+chr1	Flipflop	transcript	4715106	4837845	.	+	.	gene_id "Inst1"; transcript_id "Inst1.2"; FPKM "113947.930342255"; EXP_COUNT "220.489245212263"; frac "0.290503974512379";	
+chr1	Flipflop	exon	4715106	4715514	.	+	.	gene_id "Inst1"; transcript_id "Inst1.2"; exon_number "1"; FPKM "113947.930342255"; EXP_COUNT "220.489245212263"; frac "0.290503974512379";	
+chr1	Flipflop	exon	4771960	4772759	.	+	.	gene_id "Inst1"; transcript_id "Inst1.2"; exon_number "2"; FPKM "113947.930342255"; EXP_COUNT "220.489245212263"; frac "0.290503974512379";	
+chr1	Flipflop	exon	4829913	4830000	.	+	.	gene_id "Inst1"; transcript_id "Inst1.2"; exon_number "3"; FPKM "113947.930342255"; EXP_COUNT "220.489245212263"; frac "0.290503974512379";	
+chr1	Flipflop	exon	4832340	4832585	.	+	.	gene_id "Inst1"; transcript_id "Inst1.2"; exon_number "4"; FPKM "113947.930342255"; EXP_COUNT "220.489245212263"; frac "0.290503974512379";	
+chr1	Flipflop	exon	4834487	4834618	.	+	.	gene_id "Inst1"; transcript_id "Inst1.2"; exon_number "5"; FPKM "113947.930342255"; EXP_COUNT "220.489245212263"; frac "0.290503974512379";	
+chr1	Flipflop	exon	4837461	4837844	.	+	.	gene_id "Inst1"; transcript_id "Inst1.2"; exon_number "6"; FPKM "113947.930342255"; EXP_COUNT "220.489245212263"; frac "0.290503974512379";	
