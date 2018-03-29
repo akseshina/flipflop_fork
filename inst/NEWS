@@ -1,0 +1,181 @@
+TO DO:
+o change optim parameter in main flipflop
+o check everything ok on windows and os
+o take care of all cpp warnings (isolasso+spams)
+
+CHANGES IN VERSION 1.7.3
+ --------------------------
+    o add the header ie the sample names to the output tables (created when using output.type='table')
+    o correct little bug concerning the SAM file when header is present (see samio.cpp first test over linecount replace by totalnumread)
+
+CHANGES IN VERSION 1.5.16
+ --------------------------
+    o correct a bad memory managment in readgroup.cpp (do not use erase on a vector!)
+
+CHANGES IN VERSION 1.5.15
+ --------------------------
+    o correct a bug that may happen when the pre-processing encountered a * in the CIGAR field.
+      now it simply ignore the read (align.cpp).
+
+CHANGES IN VERSION 1.5.14
+ --------------------------
+    o correct a bug which might happened when reading the RG:Z tag in the SAM file (align.cpp)
+    o allow H characters in the CIGAR field
+    o correction in spams (prox/project.h) related to topological order
+
+
+CHANGES IN VERSION 1.5.12
+ --------------------------
+MAJOR CHANGES
+    o parallelization
+      -----> FlipFlop can be run on multiple cores. 
+
+NEW FEATURES
+    o 2 novel options related to the parallelization:
+
+      - 'sliceCount'     number of slices in which the pre-processing '.instance' file is cut. 
+                         when OnlyPreprocess is set to TRUE, it creates slices and 
+			 you can run FlipFlop independently afterwards on each one of the slice.
+      - mc.cores         it automatically distributes the slices on several cores when sliceCount>1. 
+                         when using a given preprocessing.instance and several samples,
+			 it uses several cores for some operations concerning multiple samples.
+
+CHANGES IN VERSION 1.5.11
+ --------------------------
+    o added the fraction of each predicted transcript (among one gene) in the output GTF file.
+
+
+CHANGES IN VERSION 1.5.10
+ --------------------------
+MAJOR CHANGES
+    o implementation of a MULTI-SAMPLE version of FlipFlop 
+      -----> the multi-sample procedure uses several samples simultaneously in order to increase statistical power.
+             by default the multi-sample procedure is a penalized likelihood with the group-lasso penalty.
+             you can also choose to perform a simple refit after using the pooled data.
+
+NEW FEATURES
+    o new features as a result of the multi-sample extension. Novel options are
+      - 'samples.file'    optional samples file (one line per sample name)
+      - 'output.type'     type of output when using several samples simultaneously. 
+                          when equal to "gtf" the output corresponds to a gtf file per sample with specific abundances. 
+                          when equal to "table" the output corresponds to a single gtf file storing the structure of the transcripts, 
+			  and an associated table with the abundances of all samples.
+      - 'mergerefit'      if TRUE use a simple refit strategy instead of the group-lasso. Default FALSE.
+
+MINOR CHANGES
+    o change a bit the paired-end graph paradigm. Ensure that one isoform is one unique path in the graph, as for single-end graph.
+    o [parameter] add the delta (poisson offset in the loss) parameter as an option, in case of fine-tuning.
+    o [parameter] the cutoff option is now active for both single and paired, and the default value is 1%.
+
+
+CHANGES IN VERSION 1.5.8
+ --------------------------
+    o change default MinCvgCut value from 0.25 to 0.05
+
+
+CHANGES IN VERSION 1.5.7
+ --------------------------
+    o correct a stupid error (in flipflop.R) for calculating the total number of mapped fragments in the paired-end case
+
+
+CHANGES IN VERSION 1.5.6
+ --------------------------
+MAJOR CHANGES
+    o faster single-end and paired-end graph implementation 
+    o use_TSSPAS: if yes then start/end bins are the ones with no entering/outgoing junctions (+ annotated ones if given annotations)
+
+MINOR CHANGES
+    o remove the sanity-check for possibly duplicated types, as it was solved into readgroup.cpp/getType
+    o [pre-processing] back to default 1 for minJuncCount (I changed my mind !!)
+    o [pre-processing] cancel change of version 1.3.9 (extreme boundary of segments calculateBound in readgroup.cpp) (I changed my mind !!)
+
+
+CHANGES IN VERSION 1.5.5
+ --------------------------
+    o allow more easy 2 steps run (preprocessing+prediction). The option "OnlyPreprocess" allows to perform preprocessing only. It creates two files 'prefix.instance' and 'prefix.totalnumread'. Running then flipflop with the option preprocess.instance='prefix.instance' performs the prediction (it reads automatically the total number of reads in prefix.totalnumread)
+    o [pre-processing] push the default minJuncCount from 1 to 2 (high enough for a default?) 
+    o [pre-processing] slight change for paired-end preprocessing, see option to processsam (--single-only not automatic anymore)
+    o start using Rprintf in c/cpp codes for user messages (to continue)
+
+
+CHANGES IN VERSION 1.5.4
+ --------------------------
+    o [pre-processing] solve small issue on CIGAR character 'S,X,=' (again!), see align.cpp
+
+
+CHANGES IN VERSION 1.5.3
+ --------------------------
+NEW FEATURE
+    o [pre-processing] add minJuncCount as an option, ie number of required reads to consider a junction/boundary as valid.
+
+CHANGES IN VERSION 1.5.1
+ --------------------------
+    o [pre-processing] solve small issue of possibly duplicated read type, see getType in readgroup.cpp
+
+CHANGES IN VERSION 1.3.9
+--------------------------
+    o [pre-processing] redefine extreme boundary of segments (first and last), see calculateBound in readgroup.cpp
+
+CHANGES IN VERSION 1.3.7
+--------------------------
+    o solve non-portable flags issues, see Makevars 
+
+CHANGES IN VERSION 1.3.5
+--------------------------
+    o solve compilation isue on Mavericks (using clang), see Makevars.
+
+CHANGES IN VERSION 1.3.4
+--------------------------
+    o properly take into account 'S', 'X' and '=' characters (soft clipping, strict mismatch and match) in the CIGAR of the sam file
+
+
+CHANGES IN VERSION 1.3.2
+--------------------------
+    o Solve small bugs in the graph construction
+    o Update the optimization solver for refit. More accurate and faster!
+    o Remove warnings from spams (to continue ...)
+
+
+CHANGES IN VERSION 1.1.6
+--------------------------
+NEW FEATURES
+
+    o Add 'expected.counts' in the output objects. 
+      It gives the expected raw count (ie number of mapped fragments) for each predicted transcripts. 
+      This information is also available in the output gtf file.
+
+
+CHANGES IN VERSION 1.1.4
+--------------------------
+NEW FEATURES
+
+    o Add a 'OnlyPreprocess' option for performing only the pre-processing step of the input sam file.  
+    This step writes two files: one file named 'prefix.instance' and one other named 'prefix.totalnumread',
+    where 'prefix' is the prefix of the input sam file.
+    The 'prefix.instance' file can then be given to the option 'preprocess.instance'
+    and the total number of mapped reads is stored in the 'prefix.totalnumread' file.
+
+    o Allow to give 'NN' (total number of mapped fragments) even when using the sam file as input.
+    This can be used to run flipflop in parallel on parsed sam files with the same NN constant. 
+
+
+USER-LEVEL CHANGES
+
+    o Handle '~' in input paths with path.expand function.
+
+    o Give a more detailed R output with the read count.
+
+
+MINOR CHANGES
+
+    o Do not write individual Coverage into the pre-processing file anymore ie, the .instance file.
+    (in practice comments lines in readgroup.cpp, part 'toStream')
+
+
+
+CHANGES IN VERSION 1.1.2
+--------------------------
+
+BUG FIXES
+
+    o Switch from GRangeList to a regular list as the number of metadata columns could not vary in GRangeList.

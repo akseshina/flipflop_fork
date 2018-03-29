@@ -1,0 +1,25 @@
+citEntry(
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  # BibTeX entry:
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  entry="Article",
+  author = "Elsa Bernard and Laurent Jacob and Julien Mairal and Jean-Philippe Vert",
+  title = "Efficient RNA isoforms identification and quantification from RNA-Seq data with network flows",
+  journal= "Bioinformatics",
+  year = "2014", 
+  volume = "30",
+  pages = "{2447-2455}", 
+  institution ="Mines ParisTech",
+  url = "http://bioinformatics.oxfordjournals.org/content/30/17/2447", 
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  # Plain-text citation:
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  textVersion = paste(
+ "Efficient RNA isoforms identification and quantification from RNA-Seq data with network flows",
+ "Elsa Bernard, Laurent Jacob, Julien Mairal and Jean-Philippe Vert",
+  "Bioinformatics",
+  "2014", 
+  "http://bioinformatics.oxfordjournals.org/content/30/17/2447"
+  )
+)
